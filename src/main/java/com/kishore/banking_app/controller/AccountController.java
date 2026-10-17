@@ -67,4 +67,6 @@ public class AccountController {
         AccountDto accountDto = accountService.deleteAccount(id);
         return ResponseEntity.ok(accountDto);
     }
+
+
 }
