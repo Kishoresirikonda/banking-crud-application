@@ -4,6 +4,7 @@ import com.kishore.banking_app.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -25,6 +26,9 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((auth)->auth
+                        .requestMatchers(HttpMethod.DELETE,"/api/accounts/**").hasRole("ADMIN")
+                        .requestMatchers("/api/accounts/").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST,"/authenticate").permitAll()
                                 .anyRequest()
                                 .authenticated())
                 .httpBasic(withDefaults());
