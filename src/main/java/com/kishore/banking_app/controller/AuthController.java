@@ -1,6 +1,7 @@
 package com.kishore.banking_app.controller;
 
 import com.kishore.banking_app.entity.AuthRequest;
+import com.kishore.banking_app.util.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,9 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AuthController {
     private AuthenticationManager authenticationManager;
+    private JWTUtil jwtUtil;
 
-    public AuthController(AuthenticationManager authenticationManager){
+    @Autowired
+    public AuthController(AuthenticationManager authenticationManager,JWTUtil jwtUtil){
         this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/authenticate")
@@ -24,7 +28,7 @@ public class AuthController {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authRequest.getUsername(),authRequest.getPassword())
             );
-            return "token generated";
+            return jwtUtil.generateToken(authRequest.getUsername());
         } catch (AuthenticationException e) {
             throw new RuntimeException(e);
         }
